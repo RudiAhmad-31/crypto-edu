@@ -12,7 +12,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 demoCard.innerHTML = content;
                 demoContainer.classList.remove("hidden");
                 demoContainer.classList.add("flex");
-                setupLoginDemo(); // jalankan setup jika ini demo login
+                setTimeout(() => {
+                switch (demoType) {
+                    case "login":
+                        setupLoginDemo();
+                        break;
+                    case "database":
+                        setupDatabaseDemo();
+                        break;
+                    case "superenkripsi":
+                        setupSuperEnkripsiDemo();
+                        break;
+                    case "file":
+                        setupFileDemo();
+                        break;
+                    case "steganografi":
+                        setupSteganoDemo();
+                        break;
+                    default:
+                        console.warn("Demo type tidak dikenali:", demoType);
+                }
+            }, 50);
+
             } catch (err) {
                 console.error("Gagal memuat konten demo:", err);
                 alert("Gagal memuat konten demo!");
@@ -101,3 +122,55 @@ function setupLoginDemo() {
 
     showStep(1);
 }
+
+function setupSuperEnkripsiDemo() {
+    const input = document.getElementById("superInput");
+    const output = document.getElementById("superOutput");
+
+    document.getElementById("superEncryptBtn").onclick = async () => {
+        const text = input.value;
+        if (!text) return alert("Masukkan teks terlebih dahulu!");
+
+        output.textContent = "⏳ Mengenkripsi...";
+        try {
+            const res = await fetch("/crypto-edu/public/SuperEnc/handle", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `action=encrypt&text=${encodeURIComponent(text)}`
+            });
+            const data = await res.json();
+            if (data.salsa) {
+                output.textContent = `🔐 Enkripsi (Salsa20): ${data.salsa}`;
+            } else {
+                output.textContent = `❌ ${data.error || "Gagal mengenkripsi."}`;
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            output.textContent = "❌ Gagal mengenkripsi.";
+        }
+    };
+
+    document.getElementById("superDecryptBtn").onclick = async () => {
+        const cipher = prompt("Masukkan teks terenkripsi (Salsa20):");
+        if (!cipher) return;
+
+        output.textContent = "⏳ Mendekripsi...";
+        try {
+            const res = await fetch("/crypto-edu/public/SuperEnc/handle", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `action=decrypt&cipher=${encodeURIComponent(cipher)}`
+            });
+            const data = await res.json();
+            if (data.plain) {
+                output.textContent = `🔓 Plaintext: ${data.plain}`;
+            } else {
+                output.textContent = `❌ ${data.error || "Gagal mendekripsi."}`;
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            output.textContent = "❌ Gagal mendekripsi.";
+        }
+    };
+}
+
