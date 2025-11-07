@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         setupFileDemo();
                         break;
                     case "steganografi":
-                        setupSteganoDemo();
+                        setupStegDemo();
                         break;
                     default:
                         console.warn("Demo type tidak dikenali:", demoType);
@@ -254,6 +254,88 @@ function setupFileDemo() {
     };
 
 }
+
+function setupStegDemo() {
+    const title = document.getElementById("stegTitle");
+    const hint = document.getElementById("stegHint");
+    const imageInput = document.getElementById("stegImageInput");
+    const messageInput = document.getElementById("stegMessageInput");
+    const embedBtn = document.getElementById("stegEmbedBtn");
+    const extractBtn = document.getElementById("stegExtractBtn");
+    const explainBtn = document.getElementById("stegExplainBtn");
+    const output = document.getElementById("stegOutput");
+    const explainCard = document.getElementById("stegExplainCard");
+
+    embedBtn.onclick = async () => {
+        const file = imageInput.files[0];
+        const message = messageInput.value.trim();
+        if (!file || !message) return alert("Gambar dan pesan harus diisi!");
+
+        output.textContent = "⏳ Menyisipkan pesan...";
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("message", message);
+
+        const res = await fetch("/crypto-edu/public/Steg/embed", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        if (data.encoded) {
+            output.innerHTML = `
+                ✅ Gambar berhasil disisipi:<br>
+                <a href="/crypto-edu/public/Steg/download/${data.encoded}" class="text-blue-400 underline">
+                    Unduh ${data.filename}
+                </a>
+            `;
+            title.textContent = "Steganografi: Dekripsi Gambar";
+            hint.textContent = "Unggah gambar yang telah disisipi untuk mengekstrak pesan.";
+            embedBtn.classList.add("hidden");
+            messageInput.classList.add("hidden");
+            extractBtn.classList.remove("hidden");
+        } else {
+            output.textContent = `❌ ${data.error || "Gagal menyisipkan pesan."}`;
+        }
+    };
+
+    extractBtn.onclick = async () => {
+        const file = imageInput.files[0];
+        if (!file) return alert("Pilih gambar yang telah disisipi!");
+
+        output.textContent = "⏳ Mendekripsi gambar...";
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const res = await fetch("/crypto-edu/public/Steg/extract", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        if (data.encoded) {
+            output.innerHTML = `
+                ✅ Pesan berhasil diekstrak:<br>
+                <a href="/crypto-edu/public/Steg/download/${data.encoded}" class="text-green-400 underline">
+                    Unduh gambar dengan pesan overlay
+                </a>
+
+            `;
+            title.textContent = "Penjelasan Algoritma";
+            hint.textContent = "";
+            extractBtn.classList.add("hidden");
+            explainBtn.classList.remove("hidden");
+        } else {
+            output.textContent = `❌ ${data.error || "Gagal mengekstrak pesan."}`;
+        }
+    };
+
+    explainBtn.onclick = () => {
+        explainCard.classList.remove("hidden");
+        explainBtn.classList.add("hidden");
+        imageInput.classList.add("hidden");
+        output.innerHTML = "";
+    };
+}
+
 
 
 

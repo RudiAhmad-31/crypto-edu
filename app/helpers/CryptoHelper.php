@@ -1,6 +1,5 @@
 <?php
 class CryptoHelper {
-
     // kunci rahasia (gunakan environment variable atau file .env untuk keamanan produksi)
     private static $key = null;
 
@@ -12,7 +11,7 @@ private static function getKey() {
     }
     return self::$key;
 }
-
+    // Helper untuk Super Enkripsi
     public static function encrypt($plaintext) {
         $nonce = random_bytes(SODIUM_CRYPTO_STREAM_XCHACHA20_NONCEBYTES); // 24 byte
         $ciphertext = sodium_crypto_stream_xchacha20_xor($plaintext, $nonce, self::getKey());
@@ -29,6 +28,8 @@ private static function getKey() {
         // Konversi hasil biner ke string UTF-8
         return mb_convert_encoding($plaintext, 'UTF-8', '8bit');
     }
+
+    // Helper untuk file
 
     public static function encryptFileContent($plaintext) {
         $key = self::getKey();
