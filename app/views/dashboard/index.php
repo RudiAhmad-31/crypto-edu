@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
 </head>
-<body class="bg-[#f9f4ef] text-[#F8F8F8] min-h-screen flex flex-col">
+<body class="bg-[#0f0e17] text-[#F8F8F8] min-h-screen flex flex-col">
 
     <!-- Navbar -->
     <nav class="flex justify-between items-center px-8 py-4 bg-[#14213D] shadow-md">

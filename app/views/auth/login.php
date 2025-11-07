@@ -7,11 +7,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Login | CryptoEdu</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-[#14213D] flex justify-center items-center min-h-screen">
-
+<body class="bg-[#0f0e17] flex justify-center items-center min-h-screen">
     <!-- Card Login -->
     <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center text-gray-800">
         <h2 class="text-2xl font-bold mb-6 text-[#14213D]">Login ke CryptoEdu</h2>
