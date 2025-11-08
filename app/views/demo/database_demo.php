@@ -1,108 +1,40 @@
-<div id="database-demo-content" class="text-[#F8F8F8] text-center">
-    <!-- STEP 1: Input Password -->
-    <div class="step" data-step="1">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Langkah 1: Input Password</h2>
-        <p class="text-sm mb-4">Masukkan password yang akan di-hash dengan Scrypt dan dienkripsi menggunakan ChaCha20 sebelum disimpan ke database.</p>
+<div id="db-demo-container" class="text-[#F8F8F8] text-center">
 
-        <input
-            type="password"
-            id="dbPassword"
-            placeholder="Masukkan password..."
-            class="w-full px-3 py-2 mb-4 rounded-md border border-black text-[#1E1E24]"
-        />
+    <!-- Step 1: Input Card -->
+    <div id="dbInputCard">
+        <h2 class="text-xl font-bold mb-4 text-[#FCA311]">Demo Enkripsi ke Database</h2>
+        <p class="text-sm text-gray-300 mb-4">Pilih jenis input yang ingin dienkripsi dan disimpan ke database demo.</p>
 
-        <button
-            id="dbEncryptPasswordBtn"
-            class="bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Enkripsi Password
-        </button>
-        
+        <div class="flex justify-center gap-4 mb-6">
+            <button id="dbPasswordBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md">Enkripsi Password</button>
+            <button id="dbTextBtn" class="bg-green-600 text-white px-4 py-2 rounded-md">Enkripsi Teks</button>
+        </div>
+
+        <div id="dbInputSection" class="hidden">
+            <textarea id="dbInputField" rows="3" placeholder="Masukkan data..." 
+                class="w-3/4 mx-auto p-2 mb-4 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-[#3da9fc] text-black"></textarea>
+            <button id="dbEncryptBtn" class="bg-purple-600 text-white px-4 py-2 rounded-md">Enkripsi & Simpan</button>
+        </div>
+
+        <div id="dbOutput" class="mt-4 text-sm"></div>
     </div>
 
-    <!-- STEP 2: Hasil Enkripsi Password -->
-    <div class="step hidden" data-step="2">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Langkah 2: Hasil Enkripsi Password</h2>
-        <p class="text-sm mb-4">Berikut adalah hasil enkripsi password Anda setelah melalui proses Scrypt dan ChaCha20:</p>
-
-        <pre id="dbPasswordOutput" class="bg-[#1E1E24] text-[#F8F8F8] p-3 rounded-md overflow-auto text-sm text-left"></pre>
-
-        <button
-            id="dbNextToText"
-            class="mt-4 bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Lanjutkan ke Enkripsi Teks
-        </button>
-    </div>
-
-    <!-- STEP 3: Input Teks -->
-    <div class="step hidden" data-step="3">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Langkah 3: Input Teks Biasa</h2>
-        <p class="text-sm mb-4">Masukkan teks yang akan dienkripsi menggunakan Scytale → Salsa20 → ChaCha20.</p>
-
-        <textarea
-            id="dbPlainText"
-            placeholder="Masukkan teks biasa..."
-            class="w-full px-3 py-2 mb-4 rounded-md border border-black text-[#1E1E24]"
-            rows="4"
-        ></textarea>
-
-        <button
-            id="dbEncryptTextBtn"
-            class="bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Enkripsi Teks
-        </button>
-    </div>
-
-    <!-- STEP 4: Hasil Enkripsi Teks -->
-    <div class="step hidden" data-step="4">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Langkah 4: Hasil Enkripsi Teks</h2>
-        <p class="text-sm mb-4">Berikut adalah hasil enkripsi teks Anda setelah melalui Scytale → Salsa20 → ChaCha20:</p>
-
-        <pre id="dbTextOutput" class="bg-[#1E1E24] text-[#F8F8F8] p-3 rounded-md overflow-auto text-sm text-left"></pre>
-
-        <button
-            id="dbNextToDecrypt"
-            class="mt-4 bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Lanjutkan ke Dekripsi
-        </button>
-    </div>
-
-    <!-- STEP 5: Hasil Dekripsi -->
-    <div class="step hidden" data-step="5">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Langkah 5: Hasil Dekripsi</h2>
-        <p class="text-sm mb-4">Teks yang telah dienkripsi akan didekripsi kembali secara berurutan: ChaCha20 → Salsa20 → Scytale.</p>
-
-        <pre id="dbDecryptedText" class="bg-[#1E1E24] text-[#F8F8F8] p-3 rounded-md overflow-auto text-sm text-left"></pre>
-
-        <button
-            id="dbNextToExplain"
-            class="mt-4 bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Lanjutkan ke Penjelasan
-        </button>
-    </div>
-
-    <!-- STEP 6: Penjelasan Algoritma -->
-    <div class="step hidden" data-step="6">
-        <h2 class="text-lg font-semibold mb-2 text-[#FCA311]">Penjelasan Algoritma ChaCha20</h2>
-        <p class="text-sm leading-relaxed text-left">
-            <strong>ChaCha20</strong> adalah algoritma stream cipher yang cepat dan aman, digunakan untuk mengenkripsi data dengan efisiensi tinggi. <br /><br />
-            Dalam demo ini, ChaCha20 digunakan untuk mengenkripsi hasil dari:
-            <ul class="list-disc list-inside text-left ml-4">
-                <li>Hash password (hasil dari Scrypt)</li>
-                <li>Hasil enkripsi teks (setelah Scytale dan Salsa20)</li>
-            </ul>
-            Proses ini memastikan bahwa data yang masuk ke database tidak hanya terenkripsi, tetapi juga tidak bisa dibalik tanpa kunci dan nonce yang tepat.
+    <!-- Step 2: Explanation Card -->
+    <div id="dbExplainCard" class="hidden text-left max-w-xl mx-auto">
+        <h3 class="text-lg font-semibold text-[#FCA311] mb-2">Penjelasan Algoritma ChaCha20</h3>
+        <p class="text-sm leading-relaxed mb-4">
+            ChaCha20 adalah algoritma stream cipher yang cepat dan aman, digunakan untuk mengenkripsi data secara simetris. Algoritma ini bekerja dengan menghasilkan keystream dari kunci dan nonce, lalu melakukan XOR dengan data asli. Dalam demo ini, hasil enkripsi password atau teks akan dienkripsi lagi dengan ChaCha20 sebelum disimpan ke database.
         </p>
 
-        <button
-            id="closeDemo"
-            class="mt-4 bg-[#3da9fc] text-white px-4 py-2 rounded-md border border-black font-medium hover:bg-[#3295e8] transition"
-        >
-            Selesai
-        </button>
+        <div class="flex flex-col items-center gap-4 mt-4">
+            <div class="flex justify-center gap-4">
+                <button id="backToPassword" class="bg-blue-600 text-white px-4 py-2 rounded-md">Enkripsi Password</button>
+                <button id="backToText" class="bg-green-600 text-white px-4 py-2 rounded-md">Enkripsi Teks</button>
+            </div>
+
+            <a href="<?= BASEURL ?>/Database" class="bg-[#FCA311] text-black px-4 py-2 rounded-md">
+                Lihat Isi Database Demo
+            </a>
+        </div>
     </div>
 </div>

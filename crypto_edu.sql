@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 06, 2025 at 02:48 PM
+-- Generation Time: Nov 07, 2025 at 06:47 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -64,6 +64,14 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`) VALUES
+(13, 'rudi', 'ATxFfVkl5bzEutvUMlKFQG0xCy5tmai/IHPpeJWvwdu8gcSvk9QF8rKUK5Ba3icyME05Roy75273amkTg1oCn7lHujLkQulEJxkZc7KAWSkSvXsoE6BpG1ITrv5gQnZlXN0uLXzlH3k0TeZ+TZ4coil5uj7ipzKpGg==', '2025-11-07 12:41:25'),
+(14, 'ahmad', 'gLWMcP8u96Gj07bdGh+VBVWC3uH8K01A0p43gfvEKkmv3aMnCyDMvRwtv6DEAMm6+NLCmBpfn/3IwdBGFZXjar5Q1ZH5HMvK768DyIwloNDrvx0ZYR4ovZB3xI98mt7BYnJI+p/5oK7PCWl2VbRvpapa09kXmOzokw==', '2025-11-07 12:47:35');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -106,7 +114,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

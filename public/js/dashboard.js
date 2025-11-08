@@ -336,6 +336,81 @@ function setupStegDemo() {
     };
 }
 
+function setupDatabaseDemo() {
+    const passwordBtn = document.getElementById("dbPasswordBtn");
+    const textBtn = document.getElementById("dbTextBtn");
+    const inputSection = document.getElementById("dbInputSection");
+    const inputField = document.getElementById("dbInputField");
+    const encryptBtn = document.getElementById("dbEncryptBtn");
+    const output = document.getElementById("dbOutput");
+
+    const inputCard = document.getElementById("dbInputCard");
+    const explainCard = document.getElementById("dbExplainCard");
+    const backToPassword = document.getElementById("backToPassword");
+    const backToText = document.getElementById("backToText");
+
+    let mode = null;
+
+    passwordBtn.onclick = () => {
+        mode = "password";
+        inputSection.classList.remove("hidden");
+        inputField.placeholder = "Masukkan password...";
+        output.innerHTML = "";
+    };
+
+    textBtn.onclick = () => {
+        mode = "text";
+        inputSection.classList.remove("hidden");
+        inputField.placeholder = "Masukkan teks...";
+        output.innerHTML = "";
+    };
+
+    encryptBtn.onclick = async () => {
+        const value = inputField.value.trim();
+        if (!value) return alert("Input tidak boleh kosong!");
+
+        output.textContent = "⏳ Memproses enkripsi...";
+        const formData = new FormData();
+        formData.append(mode, value);
+
+        try {
+            const res = await fetch(`/crypto-edu/public/Database/storeDemo${mode === "password" ? "Password" : "Text"}`, {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                inputCard.classList.add("hidden");
+                explainCard.classList.remove("hidden");
+            } else {
+                output.textContent = `❌ ${data.error || "Gagal menyimpan data."}`;
+            }
+        } catch (err) {
+            output.textContent = "❌ Gagal menghubungi server.";
+        }
+    };
+
+    backToPassword.onclick = () => {
+        mode = "password";
+        inputField.value = "";
+        inputField.placeholder = "Masukkan password...";
+        inputSection.classList.remove("hidden");
+        explainCard.classList.add("hidden");
+        inputCard.classList.remove("hidden");
+        output.innerHTML = "";
+    };
+
+    backToText.onclick = () => {
+        mode = "text";
+        inputField.value = "";
+        inputField.placeholder = "Masukkan teks...";
+        inputSection.classList.remove("hidden");
+        explainCard.classList.add("hidden");
+        inputCard.classList.remove("hidden");
+        output.innerHTML = "";
+    };
+}
+
 
 
 

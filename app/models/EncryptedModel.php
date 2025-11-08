@@ -3,45 +3,43 @@ class EncryptedModel {
     private $db;
 
     public function __construct() {
-        $this->db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->db = Database::getInstance(); // gunakan koneksi PDO
     }
 
     public function saveEncryptedData($feature_name, $user_id, $plaintext) {
-        require_once '../app/helpers/ScytaleHelper.php';
-        require_once '../app/helpers/Salsa20Helper.php';
-        require_once '../app/helpers/CryptoHelper.php';
-
-        // Superenkripsi: Scytale → Salsa20 → ChaCha20
-        $scytale = ScytaleHelper::encrypt($plaintext);
-        $salsa = Salsa20Helper::encrypt($scytale);
-        $final = CryptoHelper::encrypt($salsa);
-
-        $stmt = $this->db->prepare("INSERT INTO encrypted_data (feature_name, user_id, encrypted_value) VALUES (?, ?, ?)");
-        return $stmt->execute([$feature_name, $user_id, $final]);
+        $cipher = ChaChaHelper::encrypt($plaintext);
+        $stmt = $this->db->prepare("INSERT INTO encrypted_data (user_id, feature_name, plaintext, encrypted_text) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$user_id, $feature_name, $plaintext, $cipher]);
     }
 
     public function getDecryptedDataByUser($user_id) {
-        require_once '../app/helpers/ScytaleHelper.php';
-        require_once '../app/helpers/Salsa20Helper.php';
-        require_once '../app/helpers/CryptoHelper.php';
-
         $stmt = $this->db->prepare("SELECT * FROM encrypted_data WHERE user_id = ?");
         $stmt->execute([$user_id]);
+        $records = $stmt->fetchAll();
 
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as &$row) {
-            try {
-                // Dekripsi berurutan: ChaCha20 → Salsa20 → Scytale
-                $salsa = CryptoHelper::decrypt($row['encrypted_value']);
-                $scytale = Salsa20Helper::decrypt($salsa);
-                $plaintext = ScytaleHelper::decrypt($scytale);
-                $row['decrypted_value'] = $plaintext;
-            } catch (Exception $e) {
-                $row['decrypted_value'] = '[Gagal didekripsi]';
-            }
+        foreach ($records as &$row) {
+            $row['decrypted'] = ChaChaHelper::decrypt($row['encrypted_text']);
         }
+        return $records;
+    }
 
-        return $result;
+    public function saveDemoPassword($original, $scrypt, $chacha) {
+        $stmt = $this->db->prepare("INSERT INTO demo_passwords (original, scrypt_hash, chacha_encrypted) VALUES (?, ?, ?)");
+        $stmt->execute([$original, $scrypt, $chacha]);
+    }
+
+    public function saveDemoText($original, $super, $chacha) {
+        $stmt = $this->db->prepare("INSERT INTO demo_texts (original, super_encrypted, chacha_encrypted) VALUES (?, ?, ?)");
+        $stmt->execute([$original, $super, $chacha]);
+    }
+
+    public function getDemoPasswords() {
+        $stmt = $this->db->query("SELECT * FROM demo_passwords ORDER BY created_at DESC");
+        return $stmt->fetchAll(); // ✅ harus array
+    }
+
+    public function getDemoTexts() {
+        $stmt = $this->db->query("SELECT * FROM demo_texts ORDER BY created_at DESC");
+        return $stmt->fetchAll(); // ✅ harus array
     }
 }

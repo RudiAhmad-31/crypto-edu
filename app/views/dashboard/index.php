@@ -26,6 +26,8 @@ if (session_status() === PHP_SESSION_NONE) {
                 <span class="text-sm">
                     Hi, <span class="font-semibold"><?= htmlspecialchars($_SESSION['user']) ?></span>
                 </span>
+                <a href="<?= BASEURL ?>/Dashboard" class="text-[#FCA311] hover:underline">Dashboard</a>
+                <a href="<?= BASEURL ?>/Database" class="text-[#FCA311] hover:underline">Database Demo</a>
                 <a href="<?= BASEURL ?>/Auth/logout" class="text-[#FCA311] hover:underline">Logout</a>
             <?php else: ?>
                 <a href="<?= BASEURL ?>/Auth/login" class="text-[#FCA311] hover:underline">Login</a>
